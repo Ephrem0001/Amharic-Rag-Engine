@@ -1,0 +1,13 @@
+[
+  {
+    "document_id": "REPLACE_WITH_YOUR_DOCUMENT_UUID",
+    "question": "ይህ ሰነድ ስለ ምን ነው?",
+    "expected_chunk_ids": ["REPLACE_WITH_CHUNK_UUID_1", "REPLACE_WITH_CHUNK_UUID_2"],
+    "expected_pages": [1, 2]
+  },
+  {
+    "document_id": "REPLACE_WITH_YOUR_DOCUMENT_UUID",
+    "question": "በሕጉ የሚጠበቀው የአስተዲዯር ውሳኔ የሚጀምረው በአዋጁ አንቀጽ 20፣ 21፣ እና 22 መሠረት ሲሆን ይኸውም",
+    "expected_pages": [5, 6]
+  }
+]

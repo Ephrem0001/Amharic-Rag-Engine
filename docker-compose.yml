@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: amharic_rag
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d amharic_rag"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/amharic_rag
+      DEVICE: cpu
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./indexes:/app/indexes
+      - ./data/uploads:/app/data/uploads
+      - hf_cache:/root/.cache/huggingface
+
+volumes:
+  postgres_data:
+  hf_cache:

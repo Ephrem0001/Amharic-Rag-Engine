@@ -105,6 +105,24 @@ $env:HF_HUB_DISABLE_PROGRESS_BARS="0"
 
 ---
 
+## Docker
+
+Run the API and PostgreSQL with Docker Compose:
+
+```bash
+# Optional: set Postgres password (default: postgres)
+export POSTGRES_PASSWORD=your_secret
+
+docker-compose up --build
+```
+
+- **API:** http://127.0.0.1:8000  
+- **Docs:** http://127.0.0.1:8000/docs  
+
+The app service runs migrations on startup and connects to the `db` service. Volumes persist `postgres_data`, `indexes`, `data/uploads`, and the Hugging Face cache (`hf_cache`). First upload or `/rag/ask` will download models from Hugging Face.
+
+---
+
 ## Configuration
 
 Settings are read from `.env` and `app/core/config.py` (Pydantic `BaseSettings`). Key variables:
@@ -197,6 +215,42 @@ Settings are read from `.env` and `app/core/config.py` (Pydantic `BaseSettings`)
 
 ---
 
+## Evaluation
+
+Retrieval is evaluated with **Recall@5**, **Recall@10**, **MRR@5**, **MRR@10**, **nDCG@5**, **nDCG@10**, **Hit Rate@5/10**, and **mean latency (ms)**. The script compares the **base** embedding model with the **fine-tuned** model (when the finetuned FAISS index exists).
+
+### Eval questions file
+
+Create a JSON (or JSONL) file with one object per question, e.g.:
+
+- **`document_id`** (required): UUID of the document (from upload or `GET /admin/documents`).
+- **`question`** (required): Amharic question string.
+- **`expected_chunk_ids`** (optional): List of chunk UUIDs that are relevant (ground truth).
+- **`expected_pages`** (optional): If you don’t have chunk IDs, list page numbers; the script resolves chunk IDs from the DB for that document and pages.
+
+Example: `data/eval_questions.example.json`. Copy to `data/eval_questions.json` and replace placeholders with real `document_id` and, if used, `expected_chunk_ids`.
+
+### Run evaluation
+
+From the project root (with venv activated and `.env` set):
+
+```powershell
+.\.venv\Scripts\python.exe scripts\evaluate.py --eval-file data/eval_questions.json
+```
+
+- **`--output-dir`** (default: `reports`): Directory for results JSON and markdown report.
+- **`--top-k`** (default: 10): Retrieval depth (metrics are computed at 5 and 10).
+- **`--skip-finetuned`**: Only run the base model (e.g. when the finetuned index is not built).
+
+Outputs:
+
+- **`reports/eval_results_<timestamp>.json`**: Full metrics per model (base / finetuned), latency, and run info.
+- **`reports/eval_report_<timestamp>.md`**: Markdown table of metrics and a short base-vs-finetuned comparison.
+
+If the finetuned FAISS index does not exist for a document, the finetuned model is skipped for that run; use `--skip-finetuned` to avoid attempting it.
+
+---
+
 ## Troubleshooting
 
 | Symptom | What to check |
@@ -234,11 +288,18 @@ amharic-rag-engine/
 │       ├── embeddings.py   # RoBERTa Amharic embeddings
 │       ├── faiss_index.py  # Build/load FAISS index, search
 │       ├── retrieval.py    # retrieve_chunks (embed query + FAISS + DB)
-│       └── generator.py    # LLaMA-based answer generation
+│       ├── generator.py    # LLaMA-based answer generation
+│       └── evaluation_metrics.py  # Recall@k, MRR@k, nDCG@k, Hit Rate
 ├── scripts/
 │   ├── ensure_db.py        # Create DB if missing
-│   └── download_generator_model.py  # Pre-download generator
+│   ├── download_generator_model.py  # Pre-download generator
+│   └── evaluate.py         # Eval script: load questions, run retrieval, metrics, report
+├── data/
+│   └── eval_questions.example.json  # Example eval file
 ├── .env.example
+├── .dockerignore
+├── Dockerfile
+├── docker-compose.yml
 ├── alembic.ini
 ├── requirements.txt
 └── README.md
