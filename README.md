@@ -107,11 +107,17 @@ $env:HF_HUB_DISABLE_PROGRESS_BARS="0"
 
 ## Docker
 
+**Prerequisites:** Docker and Docker Compose installed. On **Windows**, install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and **start it** (the tray icon must show Docker is running). The error `open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified` means the Docker daemon is not running—launch Docker Desktop and try again.
+
 Run the API and PostgreSQL with Docker Compose:
 
 ```bash
 # Optional: set Postgres password (default: postgres)
-export POSTGRES_PASSWORD=your_secret
+# PowerShell:
+$env:POSTGRES_PASSWORD="your_secret"
+
+# Bash / WSL:
+# export POSTGRES_PASSWORD=your_secret
 
 docker-compose up --build
 ```
@@ -120,6 +126,19 @@ docker-compose up --build
 - **Docs:** http://127.0.0.1:8000/docs  
 
 The app service runs migrations on startup and connects to the `db` service. Volumes persist `postgres_data`, `indexes`, `data/uploads`, and the Hugging Face cache (`hf_cache`). First upload or `/rag/ask` will download models from Hugging Face.
+
+### Docker troubleshooting (e.g. "no such host" for auth.docker.io)
+
+If the build fails with `failed to fetch oauth token` or `lookup auth.docker.io: no such host`, Docker cannot resolve Docker Hub (network/DNS). Try in order:
+
+1. **Test DNS (PowerShell):** `ping auth.docker.io` and `nslookup auth.docker.io`. If they fail, DNS is the cause.
+2. **Restart Docker:** Fully quit Docker Desktop. In `Win+R` → `services.msc`, find **Docker Desktop Service** → Right‑click → Restart. Open Docker Desktop again.
+3. **Restart WSL (if you use WSL):** `wsl --shutdown`, then open Docker Desktop.
+4. **Use Google DNS:** Network Connections → your adapter → Properties → IPv4 → Use: Preferred `8.8.8.8`, Alternate `8.8.4.4`.
+5. **Test pull:** `docker pull python:3.11-slim`. If that works, run `docker-compose build --no-cache`.
+6. **Flush DNS:** `ipconfig /flushdns`, then retry the pull/build.
+
+Common causes: ISP DNS blocking, VPN, or Docker Desktop’s resolver; switching to 8.8.8.8 and restarting Docker often fixes it.
 
 ---
 
