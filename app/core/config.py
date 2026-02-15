@@ -1,10 +1,15 @@
-from __future__ import annotations
-
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # Make sure .env is loaded reliably (Pydantic v2 style)
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     # Database
     DATABASE_URL: str
 
@@ -15,9 +20,8 @@ class Settings(BaseSettings):
     # Models
     EMBEDDING_MODEL_BASE: str = "rasyosef/roberta-amharic-text-embedding-base"
     EMBEDDING_MODEL_MEDIUM: str = "rasyosef/roberta-amharic-text-embedding-medium"
-    EMBEDDING_MODEL_FINETUNED: Path = Path("models/embeddings_finetuned")
-
-    GENERATOR_MODEL: str = "EthioNLP/Amharic-LLAMA-all-data"
+    EMBEDDING_MODEL_FINETUNED: str = "models/embeddings_finetuned"
+    GENERATOR_MODEL: str = "rasyosef/Llama-3.2-400M-Amharic"
 
     # Hardware
     DEVICE: str = "cpu"
@@ -33,8 +37,6 @@ class Settings(BaseSettings):
     # Text generation defaults
     TEXTGEN_MAX_NEW_TOKENS: int = 256
     TEXTGEN_TEMPERATURE: float = 0.2
-
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 
 settings = Settings()

@@ -1,7 +1,7 @@
 # Web framework
-fastapi==0.104.1
+fastapi>=0.115.2,<1.0
 uvicorn[standard]==0.24.0
-python-multipart==0.0.6
+python-multipart>=0.0.18
 
 # Config
 pydantic-settings==2.1.0
@@ -11,24 +11,28 @@ python-dotenv==1.0.0
 sqlalchemy==2.0.23
 psycopg[binary]==3.2.1
 
-alembic==1.12.1
+alembic>=1.13.0,<2.0
 
 # PDF processing
 PyMuPDF==1.23.8
 
-# Embedding model (Amharic)
-sentence-transformers==2.2.2
+# Embedding + generator: tokenizers 0.20.x + transformers 4.46+ so RoBERTa and Llama 3.2 tokenizer.json parse (ModelWrapper)
+tokenizers>=0.20.0,<0.21
+transformers>=4.46.0,<4.49
+sentence-transformers>=2.6.1,<3
+sentencepiece>=0.1.99,<1.0
+huggingface_hub>=0.20.0,<1.0
 
 # Vector search
 faiss-cpu==1.13.2
 
-# Generator model (Walia-LLM)
-transformers==4.36.0
-torch==2.1.0
+# Generator model (LLaMA-based Amharic) – protobuf required for LLaMA tokenizer
+torch>=2.2,<2.3
 accelerate==0.25.0
+protobuf>=3.20,<6
 
 # Utilities
 numpy==1.26.4
-pandas==2.0.3
+pandas>=2.0,<3
 loguru==0.7.2
 tqdm==4.66.1
