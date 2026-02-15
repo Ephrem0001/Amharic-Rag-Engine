@@ -1,28 +1,28 @@
-from __future__ import annotations
-
 from fastapi import FastAPI
+from loguru import logger
 
-from app.core.config import settings
-from app.core.logging import setup_logging
 from app.routers import documents, rag, admin
 
-
-setup_logging()
-
-app = FastAPI(title="Amharic RAG (No Docker)")
+app = FastAPI(title="Amharic RAG")
 
 
 @app.on_event("startup")
-def _startup():
-    settings.INDEX_DIR.mkdir(parents=True, exist_ok=True)
-    settings.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+def startup_checks():
+    """Warn if embedding backend is missing."""
+    try:
+        from sentence_transformers import SentenceTransformer  # noqa: F401
+        logger.info("Embedding backend OK (sentence-transformers)")
+    except ImportError:
+        logger.error(
+            "sentence-transformers is NOT installed. Upload and /rag/ask will fail. "
+            "Run: pip install sentence-transformers   then restart the server."
+        )
 
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-
-app.include_router(documents.router)
-app.include_router(rag.router)
-app.include_router(admin.router)
+app.include_router(documents.router, prefix="/documents", tags=["documents"])
+app.include_router(rag.router, prefix="/rag", tags=["rag"])
+app.include_router(admin.router, prefix="/admin", tags=["admin"])

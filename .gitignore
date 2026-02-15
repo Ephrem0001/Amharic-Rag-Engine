@@ -1,10 +1,44 @@
+# Virtual environments
 venv/
+.venv/
+env/
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+*.so
+
+# Environment and secrets
 .env
+.env.local
+.env.*.local
+
+# Project data and artifacts
 data/uploads/
+data/docs/*.pdf
 indexes/
 models/embeddings_finetuned/
 reports/
+!reports/eval.md
+
+# Testing and tools
+.tox/
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE and OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
