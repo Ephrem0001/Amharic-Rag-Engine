@@ -1,0 +1,147 @@
+[
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሲቪል ሰርቪስ ሕግ ምንድነው?",
+    "expected_pages": [1, 2]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሲቪል ሰርቪስ ኮሚሽን ተግባራት ምንድነው?",
+    "expected_pages": [2, 3]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "በአዋጁ አንቀጽ 20፣ 21 እና 22 መሠረት የአስተዲዯር ውሳኔ የሚጀምረው መቼ ነው?",
+    "expected_pages": [5, 6]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የግብር መጣራት እና ግምገማ ሂደት እንዴት ይከናወናል?",
+    "expected_pages": [4, 5, 6]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የባለሙያ ውሳኔ በማን ላይ ይጣራል?",
+    "expected_pages": [5, 6, 7]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "አስተዳዳሪ በስራ ላይ ሲያልቅ ምን ማድረግ አለበት?",
+    "expected_pages": [6, 7, 8]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የፍትሕ አገልግሎት ኮሚሽን ተግባራት ምንድነው?",
+    "expected_pages": [2, 3, 4]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "ይህ ሰነድ ስለ ምን ነው?",
+    "expected_pages": [1, 2]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "በዚህ ሰነድ ውስጥ ዋና ዋና ርዕሶች ምንድን ናቸው?",
+    "expected_pages": [1, 2, 3]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሲቪል ሰርቪስ ሠራተኞች መጠሪያ እና ማጠራቀሚያ እንዴት ይወሰናል?",
+    "expected_pages": [3, 4, 5]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የቅጥር እና የማሳደግ ሂደት ምንድነው?",
+    "expected_pages": [4, 5, 6]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "አስተዳዳሪ ማንን ነው እና ምን ስልጣን አለው?",
+    "expected_pages": [5, 6, 7]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "በስራ ላይ መጣራት መቼ ይከናወናል?",
+    "expected_pages": [6, 7, 8]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የግልግል እና የመፍትሔ መብት እንዴት ይጠበቃል?",
+    "expected_pages": [7, 8, 9]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የኮሚሽኑ አባላት የስልጣን ጊዜ ስንት ነው?",
+    "expected_pages": [2, 3]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሲቪል ሰርቪስ ሠራተኛ ማንን ይጠራል?",
+    "expected_pages": [1, 2, 3]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የዲስፕሊን እርምጃ ምን ዓይነት ነው?",
+    "expected_pages": [7, 8, 9]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "በአዋጁ መሠረት የመቅረት መብት አለን?",
+    "expected_pages": [8, 9, 10]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የኮሚሽኑ መዋቅር እና አገልግሎት እንዴት ይዋቀራል?",
+    "expected_pages": [2, 3, 4]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሕግ አስተሰርዓይ አካላት ማን ናቸው?",
+    "expected_pages": [3, 4, 5]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የስራ መደብ መግለጫ እና የተግባር መግለጫ ምንድነው?",
+    "expected_pages": [4, 5, 6]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የግብር መጣራት ውጤት እንዴት ይገነዘባል?",
+    "expected_pages": [6, 7, 8]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሥራ አስኪያጅ ምንድነው?",
+    "expected_pages": [2, 3]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "በሲቪል ሰርቪስ ውስጥ የሥራ መደብ እንዴት ይወሰናል?",
+    "expected_pages": [3, 4, 5]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የግልግል መብት ምንድነው?",
+    "expected_pages": [7, 8]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሠራተኛ ግምገማ መስፈርቶች ምንድነው?",
+    "expected_pages": [5, 6, 7]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "በአዋጁ መሠረት የመቅረት ጊዜ ስንት ነው?",
+    "expected_pages": [8, 9]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የኮሚሽኑ ስልጣን እና ኃላፊነት ምንድነው?",
+    "expected_pages": [2, 3, 4]
+  },
+  {
+    "document_id": "REPLACE_AFTER_UPLOAD",
+    "question": "የሲቪል ሰርቪስ ሕግ በማን ላይ ይግባራል?",
+    "expected_pages": [1, 2]
+  }
+]

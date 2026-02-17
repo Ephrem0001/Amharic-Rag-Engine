@@ -1,14 +1,31 @@
 from __future__ import annotations
 
+from datetime import datetime
+from pathlib import Path
+
 from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.db import models
 from app.services.embeddings import embed_texts, EmbeddingModelType
 from app.services.faiss_index import build_and_save_index
+from app.services.evaluation_runner import load_eval_questions, run_evaluation, persist_eval_runs
 
 router = APIRouter()
+
+# Project root for resolving relative eval file paths
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+class EvaluateRequest(BaseModel):
+    """Optional body for POST /admin/evaluate."""
+
+    eval_file: str | None = None  # path to JSON/JSONL (relative to project root or absolute)
+    top_k: int = 10
+    skip_finetuned: bool = False
+    store_results: bool = True
 
 
 @router.get("/documents")
@@ -52,3 +69,45 @@ def reindex_document(
         "chunks": len(chunks),
         "status": "reindexed",
     }
+
+
+@router.post("/evaluate")
+def evaluate_retrieval(
+    body: EvaluateRequest | None = None,
+    db: Session = Depends(get_db),
+):
+    """
+    Run retrieval evaluation (base and optionally finetuned), return metrics.
+    Optionally store one row per model in eval_runs (run_name, embedding_model_type, top_k, recall_at_k, etc.).
+    """
+    req = body or EvaluateRequest()
+    eval_file = req.eval_file or "data/eval_questions.json"
+    path = Path(eval_file)
+    if not path.is_absolute():
+        path = _PROJECT_ROOT / eval_file
+    if not path.exists():
+        raise HTTPException(status_code=404, detail=f"Eval file not found: {path}")
+
+    try:
+        eval_questions = load_eval_questions(path)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to load eval file: {e}") from e
+
+    if not eval_questions:
+        raise HTTPException(status_code=400, detail="No eval questions in file.")
+
+    top_k = max(10, req.top_k)
+    results = run_evaluation(db, eval_questions, top_k=top_k, skip_finetuned=req.skip_finetuned)
+    results["eval_file"] = str(path)
+    results["num_questions"] = len(eval_questions)
+
+    if results.get("num_questions", 0) == 0:
+        raise HTTPException(status_code=400, detail="No valid questions with ground truth.")
+
+    run_name = None
+    if req.store_results:
+        run_name = f"eval_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        persist_eval_runs(db, run_name, results, eval_file=str(path), top_k=top_k)
+
+    results.pop("_failure_data", None)  # internal use only; do not return
+    return {"run_name": run_name, **results}
