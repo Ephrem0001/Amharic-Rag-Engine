@@ -6,8 +6,9 @@ WORKDIR /app
 # No apt packages: PyMuPDF pip wheel includes bundled libs (PyMuPDFb). Saves ~3+ min and image size.
 
 COPY requirements.txt .
-# Install CPU-only PyTorch first (avoids ~2GB of CUDA/nvidia-* packages; app runs with DEVICE=cpu)
-RUN pip install --no-cache-dir --default-timeout=600 "torch>=2.2,<2.3" --index-url https://download.pytorch.org/whl/cpu
+# CPU-only PyTorch: ADD fetches the wheel (no apt/wget); pip install from file avoids hash mismatch on slow networks
+ADD https://download.pytorch.org/whl/cpu/torch-2.2.2%2Bcpu-cp311-cp311-linux_x86_64.whl /tmp/torch.whl
+RUN pip install --no-cache-dir /tmp/torch.whl && rm /tmp/torch.whl
 # Then install the rest; pip will reuse the installed torch
 RUN pip install --no-cache-dir --default-timeout=600 -r requirements.txt
 

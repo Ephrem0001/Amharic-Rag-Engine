@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     DEVICE: str = "cpu"
     TORCH_DTYPE: str = "float32"
 
-    # Chunking
+    # Chunking (configurable via .env; recommended CHUNK_TARGET_CHARS: 700–1200)
     CHUNK_TARGET_CHARS: int = 1000
     CHUNK_OVERLAP_RATIO: float = 0.15
 

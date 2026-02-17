@@ -5,7 +5,6 @@ import json
 import random
 import sys
 from pathlib import Path
-from typing import List
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.append(str(ROOT))
@@ -27,8 +26,8 @@ def make_query_from_chunk(text: str) -> str:
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--document-id", default=None, help="Only build pairs for one document_id")
-    p.add_argument("--hard-negatives", type=int, default=3)
-    p.add_argument("--max-pairs", type=int, default=500)
+    p.add_argument("--hard-negatives", type=int, default=3, help="Hard negatives per pair")
+    p.add_argument("--max-pairs", type=int, default=800, help="Max pairs to generate (spec: 300–800; use 800 for full spec)")
     p.add_argument("--out", default="data/retrieval_pairs.jsonl")
     args = p.parse_args()
 
@@ -54,35 +53,33 @@ def main():
         written = 0
         with out_path.open("w", encoding="utf-8") as f:
             for doc_id, doc_chunks in by_doc.items():
-                # ensure index exists
+                all_ids = [str(c.id) for c in doc_chunks]
+                handle = None
                 try:
                     handle = load_index(doc_id, "base")
-                except Exception as e:
-                    print(f"Skipping doc_id={doc_id} because base index is missing. Upload with embedding_model_type=base first.")
-                    continue
-
-                all_ids = [str(c.id) for c in doc_chunks]
+                except Exception:
+                    pass  # use random negatives only
 
                 for c in doc_chunks:
                     if written >= args.max_pairs:
                         break
 
                     query = make_query_from_chunk(c.chunk_text)
-                    _, qvecs = embed_texts([query], model_type="base", batch_size=1)
-                    qvec = qvecs[0]
-
-                    # Search for hard negatives
-                    vec_ids, _scores = search(doc_id, "base", qvec, top_k=20)
                     hard = []
-                    for vid in vec_ids:
-                        if 0 <= vid < len(handle.vector_id_to_chunk_id):
-                            cand = handle.vector_id_to_chunk_id[vid]
-                            if cand != str(c.id) and cand not in hard:
-                                hard.append(cand)
-                        if len(hard) >= args.hard_negatives:
-                            break
 
-                    # Fallback: random negatives if needed
+                    if handle is not None:
+                        _, qvecs = embed_texts([query], model_type="base", batch_size=1)
+                        qvec = qvecs[0]
+                        vec_ids, _scores = search(doc_id, "base", qvec, top_k=20)
+                        for vid in vec_ids:
+                            if 0 <= vid < len(handle.vector_id_to_chunk_id):
+                                cand = handle.vector_id_to_chunk_id[vid]
+                                if cand != str(c.id) and cand not in hard:
+                                    hard.append(cand)
+                            if len(hard) >= args.hard_negatives:
+                                break
+
+                    # Fallback: random negatives if no index or not enough hard negatives
                     if len(hard) < args.hard_negatives:
                         pool = [x for x in all_ids if x != str(c.id) and x not in hard]
                         random.shuffle(pool)

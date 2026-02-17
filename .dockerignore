@@ -1,16 +1,45 @@
+# Virtual envs and Python
 .venv
 venv
+env
 __pycache__
 *.pyc
 *.pyo
-.pyd
+*.pyd
+*.egg-info
+.eggs
+
+# Secrets and env
 .env
+.env.*
+.env.local
+
+# Git and IDE
 .git
 .gitignore
+.cursor
+.idea
+.vscode
+
+# Docs and reports (not needed in image)
 *.md
 reports
+reports/
+
+# Data and artifacts (mounted at runtime or not needed)
 indexes
+indexes/
 data/uploads
+data/uploads/
+data/docs
+data/docs/
 models
-.cursor
+models/
 *.pdf
+
+# Stray files (e.g. from shell redirection: 2.2, 2.3)
+2.2
+2.3
+*.log
+.DS_Store
+Thumbs.db
